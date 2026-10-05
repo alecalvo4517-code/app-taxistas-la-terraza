@@ -1,0 +1,1171 @@
+// ======================================================
+// LA TERRAZA - PROGRAMA DE TAXISTAS
+// app.js
+// ======================================================
+
+let tipoUsuario = 'taxista';
+function aplicarPermisosUsuario() {
+
+  const seccionTickets = document.getElementById('seccionTickets');
+  const menuTickets = document.getElementById('menuTickets');
+  const seccionRegistro = document.getElementById('seccionRegistro');
+
+  // REGISTRAR TICKET: solo cajeros
+  if (seccionTickets) {
+    seccionTickets.style.display =
+      tipoUsuario === 'cajero' ? '' : 'none';
+
+    if (
+      tipoUsuario === 'taxista' &&
+      seccionTickets.classList.contains('activa')
+    ) {
+      seccionTickets.classList.remove('activa');
+    }
+  }
+
+  // Botón del menú "Registrar Ticket": solo cajeros
+  if (menuTickets) {
+    menuTickets.style.display =
+      tipoUsuario === 'cajero' ? '' : 'none';
+  }
+
+  // Al entrar como taxista, mostrar Registro de Taxista
+  if (tipoUsuario === 'taxista' && seccionRegistro) {
+    seccionRegistro.style.display = '';
+    seccionRegistro.classList.add('activa');
+  }
+}
+document.addEventListener('DOMContentLoaded', function () {
+  aplicarPermisosUsuario();
+});
+// ------------------------------------------------------
+// CONFIGURACIÓN
+// ------------------------------------------------------
+
+// Más adelante colocaremos aquí la URL del nuevo flujo
+// de Power Automate para registrar taxistas.
+const POWER_AUTOMATE_TAXISTA_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/08/workflows/c6b7c2469f344866ac5f60461e86ec5f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7_RT1iZnqWAlCXT72fcPYQ8wL4lSAufJB6TRlyNojX0';
+const POWER_AUTOMATE_TICKET_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/4066e8ddd7c34582b076075659165142/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DXyNtdlu6iNhzOJWvveUEQ3Lx9MyEch61H_T1ifliVM';
+const POWER_AUTOMATE_UPDATE_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/e6f757a94e8549f68184d6fbe70ec462/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=SrTUPlG0JWlYoMS5v_9OBnJ6dNWQYa8sQhrU-wLZqsQ';
+const POWER_AUTOMATE_SALDO_URL = "https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/7b52f6bad623430e89ae2cb47ec79ed0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=cSY_eAypxYHkt0vyeeAClRG8yCKdQUrXcSjZzSx4WTI";
+const POWER_AUTOMATE_PAGO_URL = "https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/10ad9f2d3709438fa6649f89be98876b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VVw4iiB20EUPAIZtD09UlLZUtMzviL96FWJEn6cY9rA";
+const POWER_AUTOMATE_ACCESO_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/23/workflows/9735f45e168e415bbf91f9ce2ccb1a7a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=AgxnsT9qpOFmlI-Ue8_0TEyF98l-vu8RhVHyY0uUQCI';
+// ------------------------------------------------------
+// ELEMENTOS DEL MENÚ
+// ------------------------------------------------------
+
+const botonMenu = document.getElementById('botonMenu');
+const menuLateral = document.getElementById('menuLateral');
+const fondoMenu = document.getElementById('fondoMenu');
+
+const opcionesMenu = document.querySelectorAll('.opcion-menu:not(#menuAccesoPersonal)');
+const menuAccesoPersonal = document.getElementById('menuAccesoPersonal');
+const modalAccesoPersonal = document.getElementById('modalAccesoPersonal');
+if (menuAccesoPersonal) {
+  menuAccesoPersonal.addEventListener('click', function () {
+    modalAccesoPersonal.style.display = 'flex';
+    menuLateral.classList.remove('abierto');
+  });
+}
+const cancelarAccesoPersonal = document.getElementById('cancelarAccesoPersonal');
+
+if (cancelarAccesoPersonal) {
+  cancelarAccesoPersonal.addEventListener('click', function () {
+    modalAccesoPersonal.style.display = 'none';
+    document.getElementById('clavePersonal').value = '';
+    document.getElementById('mensajeClavePersonal').textContent = '';
+  });
+}
+const confirmarAccesoPersonal = document.getElementById('confirmarAccesoPersonal');
+
+if (confirmarAccesoPersonal) {
+  confirmarAccesoPersonal.addEventListener('click', async function () {
+    const clave = document.getElementById('clavePersonal').value.trim();
+    const mensaje = document.getElementById('mensajeClavePersonal');
+
+    if (!clave) {
+      mensaje.textContent = 'Ingresá la clave de acceso.';
+      return;
+    }
+
+    mensaje.textContent = 'Verificando...';
+    try {
+  const respuesta = await fetch(POWER_AUTOMATE_ACCESO_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      clave: clave
+    })
+  });
+
+  const datos = await respuesta.json();
+
+  if (respuesta.ok && datos.autorizado === true) {
+    tipoUsuario = 'cajero';
+
+    modalAccesoPersonal.style.display = 'none';
+    document.getElementById('clavePersonal').value = '';
+    mensaje.textContent = '';
+
+    aplicarPermisosUsuario();
+  } else {
+    mensaje.textContent = 'Clave incorrecta';
+  }
+
+} catch (error) {
+  console.error('Error acceso personal:', error);
+  mensaje.textContent = 'No se pudo verificar el acceso.';
+}
+  });
+}
+const secciones = document.querySelectorAll('.seccion');
+
+
+// ------------------------------------------------------
+// ABRIR MENÚ
+// ------------------------------------------------------
+
+botonMenu.addEventListener('click', function () {
+
+  menuLateral.classList.add('abierto');
+  fondoMenu.classList.add('visible');
+
+});
+
+
+// ------------------------------------------------------
+// CERRAR MENÚ
+// ------------------------------------------------------
+
+function cerrarMenu() {
+
+  menuLateral.classList.remove('abierto');
+  fondoMenu.classList.remove('visible');
+
+}
+
+fondoMenu.addEventListener('click', cerrarMenu);
+
+
+// ------------------------------------------------------
+// CAMBIAR DE SECCIÓN
+// ------------------------------------------------------
+
+opcionesMenu.forEach(function (opcion) {
+
+  opcion.addEventListener('click', function () {
+
+    const destino = opcion.dataset.seccion;
+
+    // Sacar selección anterior
+    opcionesMenu.forEach(function (item) {
+      item.classList.remove('activa');
+    });
+
+    // Marcar opción seleccionada
+    opcion.classList.add('activa');
+
+    // Ocultar todas las secciones
+    secciones.forEach(function (seccion) {
+      seccion.classList.remove('activa');
+    });
+
+    // Mostrar sección correspondiente
+    if (destino === 'registro') {
+      document
+        .getElementById('seccionRegistro')
+        .classList.add('activa');
+    }
+
+    if (destino === 'tickets') {
+      document
+        .getElementById('seccionTickets')
+        .classList.add('activa');
+    }
+
+    if (destino === 'saldo') {
+      document
+        .getElementById('seccionSaldo')
+        .classList.add('activa');
+    }
+
+    cerrarMenu();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  });
+
+});
+
+
+// ======================================================
+// REGISTRO DE TAXISTA
+// ======================================================
+
+const formulario = document.getElementById('formRegistroTaxista');
+
+formulario.addEventListener('submit', function (event) {
+
+  event.preventDefault();
+
+  registrarNuevoTaxista();
+
+});
+
+
+// ------------------------------------------------------
+// REGISTRAR NUEVO TAXISTA
+// ------------------------------------------------------
+
+function registrarNuevoTaxista() {
+
+  const nombre =
+    document.getElementById('nombreNuevo').value.trim();
+
+  const telefono =
+    document.getElementById('telefonoNuevo').value.trim();
+
+  const nacionalidad =
+    document.getElementById('nacionalidadNuevo').value.trim();
+
+  const paradaAgencia =
+    document.getElementById('paradaNuevo').value.trim();
+
+  const dni =
+    document.getElementById('dniNuevo').value.trim();
+
+  const correo =
+    document.getElementById('correoNuevo').value.trim();
+
+  const aceptaAcuerdo =
+    document.getElementById('aceptaAcuerdo').checked;
+
+  const boton =
+    document.getElementById('botonNuevo');
+
+  const mensaje =
+    document.getElementById('mensajeNuevo');
+
+
+  // Limpiar mensaje anterior
+  mensaje.className = '';
+  mensaje.style.display = 'none';
+  mensaje.innerHTML = '';
+
+
+  // ----------------------------------------------------
+  // VALIDAR CAMPOS
+  // ----------------------------------------------------
+
+  if (
+    !nombre ||
+    !telefono ||
+    !nacionalidad ||
+    !paradaAgencia ||
+    !dni ||
+    !correo
+  ) {
+
+    mostrarError(
+      'Completá todos los datos para continuar.'
+    );
+
+    return;
+  }
+
+
+  // ----------------------------------------------------
+  // VALIDAR ACUERDO
+  // ----------------------------------------------------
+
+  if (!aceptaAcuerdo) {
+
+    mostrarError(
+      'Para registrarte tenés que leer y aceptar el acuerdo.'
+    );
+
+    return;
+  }
+
+
+  // ----------------------------------------------------
+  // VALIDAR CORREO
+  // ----------------------------------------------------
+
+  if (!correoValido(correo)) {
+
+    mostrarError(
+      'Ingresá un correo electrónico válido.'
+    );
+
+    return;
+  }
+
+
+  // ----------------------------------------------------
+  // DATOS QUE ENVIAREMOS A POWER AUTOMATE
+  // ----------------------------------------------------
+
+  const datosTaxista = {
+
+    nombre: nombre,
+    telefono: telefono,
+    nacionalidad: nacionalidad,
+    paradaAgencia: paradaAgencia,
+    dni: dni,
+    correo: correo,
+    aceptaAcuerdo: true
+
+  };
+
+
+  console.log(
+    'Datos preparados para Power Automate:',
+    datosTaxista
+  );
+
+
+  // ----------------------------------------------------
+  // TODAVÍA NO CONECTAMOS POWER AUTOMATE
+  // ----------------------------------------------------
+
+  if (!POWER_AUTOMATE_TAXISTA_URL) {
+
+    mensaje.className = 'correcto';
+
+    mensaje.innerHTML =
+      '<strong>Formulario correcto.</strong><br><br>' +
+      'Los datos están preparados para enviarse a Power Automate.';
+
+    mensaje.style.display = 'block';
+
+    mensaje.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+    return;
+  }
+
+
+  // ----------------------------------------------------
+  // CUANDO CONECTEMOS POWER AUTOMATE
+  // ----------------------------------------------------
+
+  boton.disabled = true;
+  boton.textContent = 'REGISTRANDO...';
+
+
+  fetch(POWER_AUTOMATE_TAXISTA_URL, {
+
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify(datosTaxista)
+
+  })
+
+    .then(async function (response) {
+
+      let resultado = {};
+
+      try {
+
+        resultado = await response.json();
+
+      } catch (error) {
+
+        throw new Error(
+          'Power Automate no devolvió una respuesta válida.'
+        );
+
+      }
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          resultado.mensaje ||
+          'No se pudo realizar el registro.'
+        );
+
+      }
+
+
+      if (resultado.ok === false) {
+
+        throw new Error(
+          resultado.mensaje ||
+          'No se pudo realizar el registro.'
+        );
+
+      }
+
+
+      return resultado;
+
+    })
+
+   .then(function (resultado) {
+
+  boton.disabled = false;
+  boton.textContent = 'OBTENER MI NÚMERO';
+
+  if (resultado.yaRegistrado === true) {
+
+    mostrarYaRegistrado(
+      resultado.nombre || nombre,
+      resultado.numeroTaxista
+    );
+
+    return;
+  }
+
+  mostrarRegistroCorrecto(
+    resultado.nombre || nombre,
+    resultado.numeroTaxista
+  );
+
+})
+    .catch(function (error) {
+
+      console.error(error);
+
+      boton.disabled = false;
+      boton.textContent = 'OBTENER MI NÚMERO';
+
+      mostrarError(
+        error.message ||
+        'No pudimos realizar el registro. Intentá nuevamente.'
+      );
+
+    });
+
+}
+
+
+// ------------------------------------------------------
+// REGISTRO CORRECTO
+// ------------------------------------------------------
+function mostrarRegistroCorrecto(nombre, numeroTaxista) {
+
+  const formulario =
+    document.getElementById('formRegistroTaxista');
+
+  const mensaje =
+    document.getElementById('mensajeNuevo');
+
+  formulario.style.display = 'none';
+
+  mensaje.className = 'correcto';
+
+  mensaje.innerHTML =
+    '<strong style="font-size:20px;">' +
+    '¡Gracias, ' + escapar(nombre) + '!' +
+    '</strong>' +
+
+    '<br><br>' +
+
+    'Tu registro se realizó correctamente.' +
+
+    '<br><br>' +
+
+    'Tu número de taxista es:' +
+
+    '<br>' +
+
+    '<strong style="font-size:34px;">' +
+    escapar(String(numeroTaxista)) +
+    '</strong>' +
+
+    '<br><br>' +
+
+    'Guardá este número para identificarte en La Terraza.' +
+
+    '<br>' +
+
+    'También enviamos esta información a tu correo electrónico.';
+
+  mensaje.style.display = 'block';
+
+  mensaje.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+
+}
+// ------------------------------------------------------
+// TAXISTA YA REGISTRADO
+// ------------------------------------------------------
+
+function mostrarYaRegistrado(nombre, numeroTaxista) {
+
+  const formulario =
+    document.getElementById('formRegistroTaxista');
+
+  const mensaje =
+    document.getElementById('mensajeNuevo');
+
+  formulario.style.display = 'none';
+
+  mensaje.className = 'correcto';
+
+  mensaje.innerHTML =
+    '<strong style="font-size:20px;">' +
+    '¡Hola, ' + escapar(nombre) + '!' +
+    '</strong>' +
+
+    '<br><br>' +
+
+    'Este DNI ya se encuentra registrado en el Programa de Taxistas de La Terraza.' +
+
+    '<br><br>' +
+
+    'Tu número de taxista es:' +
+
+    '<br>' +
+
+    '<strong style="font-size:34px;">' +
+    escapar(String(numeroTaxista)) +
+    '</strong>' +
+
+    '<br><br>' +
+
+    'No es necesario volver a registrarte.';
+
+  mensaje.style.display = 'block';
+
+  mensaje.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+
+}
+
+// ------------------------------------------------------
+// MOSTRAR ERROR
+// ------------------------------------------------------
+
+function mostrarError(texto) {
+
+  const mensaje =
+    document.getElementById('mensajeNuevo');
+
+  mensaje.className = 'error';
+
+  mensaje.textContent = texto;
+
+  mensaje.style.display = 'block';
+
+
+  mensaje.scrollIntoView({
+
+    behavior: 'smooth',
+    block: 'center'
+
+  });
+
+}
+
+
+// ------------------------------------------------------
+// VALIDAR CORREO
+// ------------------------------------------------------
+
+function correoValido(correo) {
+
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+
+}
+
+
+// ------------------------------------------------------
+// ESCAPAR TEXTO
+// Evita insertar HTML recibido desde datos externos
+// ------------------------------------------------------
+
+function escapar(texto) {
+
+  const div = document.createElement('div');
+
+  div.textContent = texto ?? '';
+
+  return div.innerHTML;
+
+}
+// ======================================================
+// CARGA DE TICKET
+// ======================================================
+
+const formularioTicket =
+  document.getElementById('formRegistroTicket');
+
+if (formularioTicket) {
+
+  formularioTicket.addEventListener('submit', function (event) {
+
+    event.preventDefault();
+
+    probarCargaTicket();
+
+  });
+
+}
+
+
+// ------------------------------------------------------
+// PRUEBA DE CARGA Y CÁLCULO DE COMISIÓN
+// ------------------------------------------------------
+
+function probarCargaTicket() {
+
+  const numeroTaxista =
+    document.getElementById('numeroTaxistaTicket').value.trim();
+
+  const numeroTicket =
+    document.getElementById('numeroTicket').value.trim();
+
+  const importe =
+    Number(document.getElementById('importeTicket').value);
+
+  const resultado =
+    document.getElementById('resultadoTicket');
+
+  const mensaje =
+    document.getElementById('mensajeTicket');
+
+
+  // Limpiar mensajes anteriores
+  mensaje.className = '';
+  mensaje.style.display = 'none';
+  mensaje.textContent = '';
+
+  resultado.style.display = 'none';
+
+
+  // Validaciones
+  if (!numeroTaxista || !numeroTicket || !importe) {
+
+    mostrarErrorTicket(
+      'Completá el número de taxista, número de ticket e importe.'
+    );
+
+    return;
+  }
+
+
+  if (importe <= 0) {
+
+    mostrarErrorTicket(
+      'El importe de la cuenta debe ser mayor a cero.'
+    );
+
+    return;
+  }
+
+
+  // Calcular comisión del 10 %
+  const comision = importe * 0.10;
+const datosTicket = {
+  numeroTaxista: numeroTaxista,
+  numeroTicket: numeroTicket,
+  importe: importe,
+  comision: comision,
+  comisionReal: comision,
+  estado: 'Pendiente de pago'
+  };
+  fetch(POWER_AUTOMATE_TICKET_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(datosTicket)
+})
+.then(response => response.json())
+.then(data => {
+
+  console.log('Respuesta Power Automate:', data);
+
+  if (data.ticketDuplicado === true) {
+    mostrarErrorTicket(
+      data.mensaje || 'Este número de ticket ya fue registrado.'
+    );
+    throw new Error('TICKET_DUPLICADO');
+  }
+if (data.taxistaNoExiste === true) {
+  mostrarErrorTicket(
+    data.mensaje || 'El número de taxista no está registrado.'
+  );
+  throw new Error('TAXISTA_NO_EXISTE');
+}
+  return data;
+})
+
+  // Por ahora mostramos el número.
+  // Luego Power Automate nos devolverá el nombre real del taxista.
+  document.getElementById('resultadoNombreTaxista').textContent =
+    'N.º ' + numeroTaxista;
+
+  document.getElementById('resultadoNumeroTicket').textContent =
+    numeroTicket;
+
+  document.getElementById('resultadoImporte').textContent =
+    formatearPesos(importe);
+
+  document.getElementById('resultadoComision').textContent =
+    formatearPesos(comision);
+
+
+  // Comisión real comienza con el mismo 10 %
+  document.getElementById('comisionReal').value =
+    comision.toFixed(2);
+
+
+  // Estado inicial
+  document.getElementById('estadoPago').value =
+    'Pendiente';
+
+
+  resultado.style.display = 'block';
+
+  resultado.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  })
+
+}
+
+
+// ------------------------------------------------------
+// ERROR DE TICKET
+// ------------------------------------------------------
+
+function mostrarErrorTicket(texto) {
+const resultado = document.getElementById('resultadoTicket');
+
+if (resultado) {
+  resultado.style.display = 'none';
+}
+  const mensaje =
+    document.getElementById('mensajeTicket');
+
+  mensaje.className = 'error';
+
+  mensaje.textContent = texto;
+
+  mensaje.style.display = 'block';
+
+}
+
+
+// ------------------------------------------------------
+// FORMATO PESOS
+// ------------------------------------------------------
+
+function formatearPesos(valor) {
+
+  return new Intl.NumberFormat(
+    'es-AR',
+    {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 2
+    }
+  ).format(valor);
+
+}
+const botonActualizarTicket = document.getElementById('botonActualizarTicket');
+
+botonActualizarTicket.addEventListener('click', function () {
+  const numeroTicket = document.getElementById('resultadoNumeroTicket').textContent.trim();
+  const comisionReal = parseFloat(document.getElementById('comisionReal').value);
+  const estado = document.getElementById('estadoPago').value;
+
+  console.log('Datos para actualizar:', {
+    numeroTicket,
+    comisionReal,
+    estado
+  });
+    fetch(POWER_AUTOMATE_UPDATE_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    numeroTicket: numeroTicket,
+    comisionReal: comisionReal,
+    estado: estado
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Respuesta actualización:', data);
+
+  const mensajeActualizacion = document.getElementById('mensajeActualizacion');
+
+if (data.ok === true) {
+  mensajeActualizacion.innerHTML =
+    '✓ Comisión actualizada correctamente<br>Estado: ' + estado;
+
+  mensajeActualizacion.style.display = 'block';
+} else {
+  mensajeActualizacion.textContent =
+    data.mensaje || 'No se pudo actualizar la comisión.';
+
+  mensajeActualizacion.style.display = 'block';
+}
+});
+});
+// ===============================
+// IDIOMA
+// ===============================
+
+let idiomaActual = localStorage.getItem('idiomaTaxista') || 'es';
+
+function cambiarIdioma(idioma) {
+  idiomaActual = idioma;
+
+  // Recordar idioma elegido
+  localStorage.setItem('idiomaTaxista', idioma);
+
+  // Marcar botón activo
+  document.getElementById('idiomaES')
+    .classList.toggle('activo', idioma === 'es');
+
+  document.getElementById('idiomaPT')
+    .classList.toggle('activo', idioma === 'pt');
+    if (idioma === 'pt') {
+  document.getElementById('textoPrograma').textContent = 'Programa de Taxistas';
+  document.getElementById('menuRegistro').textContent = 'Cadastro de Taxista';
+  document.getElementById('menuTickets').textContent = 'Registrar Ticket';
+  document.getElementById('menuSaldo').textContent = 'Consultar Saldo';
+  document.getElementById('tituloSaldo').textContent = 'Consultar Saldo';
+document.getElementById('descripcionSaldo').textContent =
+  'Consulte as comissões pendentes de pagamento ou já pagas.';
+document.getElementById('labelSaldoTaxista').textContent = 'N.º do Taxista';
+document.getElementById('labelSaldoEstado').textContent = 'Status';
+document.getElementById('opcionSaldoPendiente').textContent = 'Pendente de pagamento';
+document.getElementById('opcionSaldoPagado').textContent = 'Pago';
+document.getElementById('opcionSaldoTodos').textContent = 'Todos';
+document.getElementById('textoBotonConsultarSaldo').textContent = 'CONSULTAR';
+  document.getElementById('tituloRegistro').textContent = 'Cadastro de Taxista';
+document.getElementById('descripcionRegistro').textContent =
+  'Preencha seus dados para fazer parte do Programa de Taxistas do La Terraza.';
+
+document.getElementById('labelNombre').textContent = 'Nome e sobrenome';
+document.getElementById('labelTelefono').textContent = 'Telefone';
+document.getElementById('labelNacionalidad').textContent = 'Nacionalidade';
+document.getElementById('labelParada').textContent = 'Ponto ou agência';
+document.getElementById('labelDni').textContent = 'RG / Documento';
+document.getElementById('labelCorreo').textContent = 'E-mail';
+
+document.getElementById('tituloAcuerdo').textContent =
+  'Acordo do Programa de Comissões';
+
+document.getElementById('textoAceptacion').textContent =
+  'Li e aceito o Acordo do Programa de Comissões do La Terraza.';
+
+document.getElementById('botonNuevo').textContent =
+  'OBTER MEU NÚMERO';
+  document.getElementById('textoAcuerdo').innerHTML = `
+  <p>
+    <strong>Comissão:</strong>
+    A comissão será de 10% sobre os alimentos e bebidas elegíveis
+    efetivamente consumidos pelos clientes indicados.
+  </p>
+
+  <p>
+    Não estão incluídas gorjetas, apresentações artísticas, cobranças
+    adicionais, cortesias, consumos com desconto ou bonificados,
+    cancelamentos nem reembolsos.
+  </p>
+
+  <p>
+    Não haverá comissão para hóspedes do Panoramic Grand ou Iguazú Grand,
+    clientes com reserva prévia nem para visitas posteriores realizadas
+    sem a participação do motorista.
+  </p>
+
+  <p>
+    Cada conta ou ticket poderá gerar apenas uma comissão e deverá estar
+    associado a um único motorista.
+  </p>
+
+  <p>
+    Tickets duplicados, inexistentes, cancelados, alterados ou que não
+    possam ser verificados não gerarão comissão.
+  </p>
+
+  <p>
+    O pagamento será realizado em pesos argentinos após a validação das
+    informações, de acordo com as condições estabelecidas pelo La Terraza.
+  </p>
+
+  <p>
+    Os dados fornecidos serão utilizados para administrar, controlar e
+    pagar as comissões correspondentes.
+  </p>
+`;
+} else {
+  document.getElementById('textoPrograma').textContent = 'Programa de Taxistas';
+  document.getElementById('menuRegistro').textContent = 'Registro de Taxista';
+  document.getElementById('menuTickets').textContent = 'Cargar Ticket';
+  document.getElementById('menuSaldo').textContent = 'Consultar Saldo';
+  document.getElementById('tituloSaldo').textContent = 'Consultar Saldo';
+document.getElementById('descripcionSaldo').textContent =
+  'Consultá las comisiones pendientes de pago o ya abonadas.';
+document.getElementById('labelSaldoTaxista').textContent = 'N.º de Taxista';
+document.getElementById('labelSaldoEstado').textContent = 'Estado';
+document.getElementById('opcionSaldoPendiente').textContent = 'Pendiente de pago';
+document.getElementById('opcionSaldoPagado').textContent = 'Pagado';
+document.getElementById('opcionSaldoTodos').textContent = 'Todos';
+document.getElementById('textoBotonConsultarSaldo').textContent = 'CONSULTAR';
+  document.getElementById('tituloRegistro').textContent = 'Registro de Taxista';
+
+document.getElementById('descripcionRegistro').textContent =
+  'Completá tus datos para formar parte del Programa de Taxistas de La Terraza.';
+
+document.getElementById('labelNombre').textContent = 'Nombre y apellido';
+document.getElementById('labelTelefono').textContent = 'Teléfono';
+document.getElementById('labelNacionalidad').textContent = 'Nacionalidad';
+document.getElementById('labelParada').textContent = 'Parada o agencia';
+document.getElementById('labelDni').textContent = 'DNI / Documento';
+document.getElementById('labelCorreo').textContent = 'Correo electrónico';
+
+document.getElementById('tituloAcuerdo').textContent =
+  'Acuerdo del Programa de Comisiones';
+
+document.getElementById('textoAceptacion').textContent =
+  'He leído y acepto el Acuerdo del Programa de Comisiones de La Terraza.';
+
+document.getElementById('botonNuevo').textContent =
+  'OBTENER MI NÚMERO';
+  document.getElementById('textoAcuerdo').innerHTML = `
+  <p>
+    <strong>Comisión:</strong>
+    La comisión será del 10 % sobre los alimentos y bebidas
+    elegibles efectivamente consumidos por los clientes derivados.
+  </p>
+
+  <p>
+    No se incluyen propinas, shows artísticos, cargos adicionales,
+    cortesías, consumos bonificados, cancelaciones ni devoluciones.
+  </p>
+
+  <p>
+    No corresponde comisión por huéspedes de Panoramic Grand o
+    Iguazú Grand, clientes con reserva previa ni visitas posteriores
+    realizadas sin intervención del conductor.
+  </p>
+
+  <p>
+    Cada cuenta o ticket podrá generar una sola comisión y deberá
+    estar asociado a un único conductor.
+  </p>
+
+  <p>
+    Los tickets duplicados, inexistentes, anulados, alterados o que
+    no puedan verificarse no generarán comisión.
+  </p>
+
+  <p>
+    El pago se realizará en pesos argentinos una vez validada la
+    información, de acuerdo con las condiciones establecidas por
+    La Terraza.
+  </p>
+
+  <p>
+    Los datos suministrados serán utilizados para administrar,
+    controlar y pagar las comisiones correspondientes.
+  </p>
+`;
+}
+}
+
+// Cargar el idioma guardado al abrir la app
+document.addEventListener('DOMContentLoaded', function () {
+  cambiarIdioma(idiomaActual);
+});
+// ========================================
+// CONSULTA DE SALDO DE TAXISTA
+// ========================================
+
+const botonConsultarSaldo = document.getElementById('botonConsultarSaldo');
+
+if (botonConsultarSaldo) {
+  botonConsultarSaldo.addEventListener('click', async function () {
+
+    const numeroTaxista = document
+      .getElementById('saldoNumeroTaxista')
+      .value
+      .trim();
+
+    const estado = document
+      .getElementById('saldoEstado')
+      .value;
+
+    const resultado = document.getElementById('resultadoSaldo');
+
+    if (!numeroTaxista) {
+      resultado.innerHTML = '<p>Ingresá el número de taxista.</p>';
+      return;
+    }
+
+    resultado.innerHTML = '<p>Consultando...</p>';
+
+    try {
+
+      const respuesta = await fetch(POWER_AUTOMATE_SALDO_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          numeroTaxista: numeroTaxista,
+          estado: estado
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      console.log('Respuesta consulta saldo:', datos);
+
+      const cuentas = Array.isArray(datos.cuentas) ? datos.cuentas : [];
+      const detalleCuentas = cuentas.map(cuenta => `
+  <tr>
+<td>${
+  cuenta.Fecha
+    ? new Date((Number(cuenta.Fecha) - 25569) * 86400 * 1000).toLocaleDateString('es-AR', { timeZone: 'UTC' })
+    : '-'
+}</td>
+    <td>${cuenta['Numero de ticket'] || '-'}</td>
+    <td>$ ${Number(cuenta.Importe || 0).toLocaleString('es-AR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}</td>
+    <td>$ ${Number(cuenta.Comision || 0).toLocaleString('es-AR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}</td>
+    <td>${cuenta.Estado || '-'}</td>
+    <td>${
+  cuenta.Estado === 'Pagado' && cuenta['Fecha de pago']
+    ? new Date((Number(cuenta['Fecha de pago']) - 25569) * 86400 * 1000).toLocaleDateString('es-AR')
+    : '-'
+}</td>
+    <td>${
+  cuenta.Estado === 'Pagado' && cuenta['Hora de pago']
+    ? new Date(Number(cuenta['Hora de pago']) * 86400 * 1000).toISOString().slice(11, 16)
+    : '-'
+}</td>
+  </tr>
+`).join('');
+      resultado.innerHTML = `
+  <div class="resultado-saldo">
+
+    <h3>Total de comisión</h3>
+
+    <div class="total-saldo">
+    $ ${Number(datos.totalComision || 0).toLocaleString('es-AR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}
+    </div>
+    ${tipoUsuario === 'cajero' && estado === 'Pendiente de pago' && Number(datos.totalComision || 0) > 0 ? `
+  <button
+    type="button"
+    id="botonConfirmarPago"
+    class="boton-confirmar-pago"
+  >
+    REALIZAR PAGO
+  </button>
+` : ''}
+
+    <table class="tabla-saldo">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Ticket</th>
+          <th>Importe</th>
+          <th>Comisión</th>
+          <th>Estado</th>
+          <th>Fecha de pago</th>
+          <th>Hora de pago</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${detalleCuentas}
+      </tbody>
+    </table>
+
+  </div>
+`;
+const botonConfirmarPago = document.getElementById('botonConfirmarPago');
+
+if (botonConfirmarPago) {
+  botonConfirmarPago.addEventListener('click', async function () {
+    document.getElementById('modalPagoTaxista').textContent =
+  `Taxista N.º ${numeroTaxista}`;
+
+document.getElementById('modalPagoTickets').textContent =
+  `${cuentas.length} tickets pendientes`;
+
+document.getElementById('modalPagoTotal').textContent =
+  `$ ${Number(datos.totalComision || 0).toLocaleString('es-AR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+
+document.getElementById('modalPago').style.display = 'flex';
+document.getElementById('cancelarPago').onclick = function () {
+  document.getElementById('modalPago').style.display = 'none';
+};
+document.getElementById('confirmarPago').onclick = async function () {
+    botonConfirmarPago.disabled = true;
+botonConfirmarPago.textContent = 'PROCESANDO PAGO...';
+const respuestaPago = await fetch(POWER_AUTOMATE_PAGO_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    numeroTaxista: numeroTaxista
+  })
+});
+if (!respuestaPago.ok) {
+  throw new Error('Error al procesar el pago');
+}
+
+const datosPago = await respuestaPago.json();
+
+document.getElementById('modalPago').style.display = 'none';
+botonConfirmarPago.disabled = false;
+botonConfirmarPago.textContent = 'REALIZAR PAGO';
+document.getElementById('modalPagoExitoso').style.display = 'flex';
+document.getElementById('cerrarPagoExitoso').onclick = function () {
+  document.getElementById('modalPagoExitoso').style.display = 'none';
+  botonConsultarSaldo.click();
+};
+botonConsultarSaldo.click();
+};
+});
+}
+    } catch (error) {
+
+      console.error('Error consulta saldo:', error);
+
+      resultado.innerHTML =
+        '<p>No se pudo realizar la consulta.</p>';
+    }
+
+  });
+}

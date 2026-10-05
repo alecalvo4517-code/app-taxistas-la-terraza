@@ -1,0 +1,915 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+
+  background:
+    linear-gradient(rgba(20, 15, 10, .72), rgba(20, 15, 10, .82)),
+    url('https://image-tc.galaxy.tf/wijpeg-eaphezx882xtaeta9z0fadx3p/la-terraza-9_standard.jpg?crop=106%2C0%2C1689%2C1267&width=1600')
+    center / cover fixed;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 20px;
+}
+
+
+/* ==============================
+   CONTENEDOR PRINCIPAL
+============================== */
+
+.contenedor {
+  position: relative;
+
+  width: 100%;
+  max-width: 650px;
+
+  background: rgba(255, 255, 255, .97);
+
+  border-radius: 16px;
+  overflow: hidden;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, .35);
+}
+
+
+/* ==============================
+   ENCABEZADO
+============================== */
+
+.encabezado {
+  position: relative;
+
+  background: #211914;
+  color: white;
+
+  text-align: center;
+
+  padding: 27px 65px 24px;
+}
+
+.hotel {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: .75;
+}
+
+.encabezado h1 {
+  margin: 8px 0 4px;
+
+  font-family: Georgia, serif;
+  font-size: 35px;
+  font-weight: normal;
+}
+
+.subtitulo {
+  font-size: 13px;
+  letter-spacing: 1px;
+  opacity: .85;
+}
+
+
+/* ==============================
+   BOTÓN HAMBURGUESA
+============================== */
+
+.boton-menu {
+  position: absolute;
+
+  top: 50%;
+  left: 18px;
+
+  transform: translateY(-50%);
+
+  width: 44px;
+  height: 44px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, .08);
+
+  color: white;
+
+  font-size: 24px;
+  font-weight: normal;
+
+  cursor: pointer;
+}
+
+.boton-menu:hover {
+  background: rgba(255, 255, 255, .16);
+}
+
+
+/* ==============================
+   MENÚ LATERAL
+============================== */
+
+.menu-lateral {
+  position: fixed;
+
+  top: 0;
+  left: -300px;
+
+  width: 280px;
+  height: 100vh;
+
+  z-index: 1000;
+
+  background: #211914;
+
+  padding: 35px 18px;
+
+  box-shadow: 8px 0 25px rgba(0, 0, 0, .30);
+
+  transition: left .25s ease;
+}
+
+.menu-lateral.abierto {
+  left: 0;
+}
+
+.menu-titulo {
+  color: white;
+
+  font-family: Georgia, serif;
+  font-size: 21px;
+
+  padding: 15px 12px 25px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, .15);
+
+  margin-bottom: 15px;
+}
+
+.opcion-menu {
+  width: 100%;
+
+  margin: 5px 0;
+  padding: 15px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: rgba(255, 255, 255, .80);
+
+  text-align: left;
+
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+.opcion-menu:hover {
+  background: rgba(255, 255, 255, .08);
+  color: white;
+}
+
+.opcion-menu.activa {
+  background: #7b4527;
+  color: white;
+}
+
+.fondo-menu {
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 999;
+
+  background: rgba(0, 0, 0, .50);
+}
+
+.fondo-menu.visible {
+  display: block;
+}
+
+
+/* ==============================
+   CONTENIDO
+============================== */
+
+.contenido {
+  padding: 30px;
+}
+
+.seccion {
+  display: none;
+}
+
+.seccion.activa {
+  display: block;
+}
+
+.titulo {
+  text-align: center;
+
+  margin: 0 0 7px;
+
+  color: #28201b;
+
+  font-size: 22px;
+}
+
+.descripcion {
+  text-align: center;
+
+  color: #777;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  margin-bottom: 27px;
+}
+
+
+/* ==============================
+   FORMULARIO
+============================== */
+
+label {
+  display: block;
+
+  font-weight: bold;
+
+  color: #3b312b;
+
+  font-size: 14px;
+
+  margin: 17px 0 7px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"] {
+  width: 100%;
+
+  padding: 15px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  background: white;
+
+  font-size: 17px;
+
+  outline: none;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus {
+  border-color: #8a5a32;
+
+  box-shadow: 0 0 0 3px rgba(138, 90, 50, .10);
+}
+
+
+/* ==============================
+   ACUERDO
+============================== */
+
+.caja-acuerdo {
+  margin-top: 25px;
+
+  padding: 18px;
+
+  background: #f5f2ef;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.titulo-acuerdo {
+  font-weight: bold;
+
+  font-size: 16px;
+
+  color: #302720;
+
+  margin-bottom: 12px;
+}
+
+.texto-acuerdo {
+  max-height: 220px;
+
+  overflow-y: auto;
+
+  padding-right: 8px;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #444;
+
+  text-align: left;
+}
+
+.texto-acuerdo p:first-child {
+  margin-top: 0;
+}
+
+.aceptacion {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  font-weight: normal;
+
+  line-height: 1.4;
+
+  cursor: pointer;
+}
+
+.aceptacion input {
+  width: 22px;
+  height: 22px;
+
+  min-width: 22px;
+
+  margin: 0;
+
+  cursor: pointer;
+}
+
+
+/* ==============================
+   BOTÓN PRINCIPAL
+============================== */
+
+.boton-principal {
+  width: 100%;
+
+  margin-top: 25px;
+
+  padding: 16px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #7b4527;
+
+  color: white;
+
+  font-weight: bold;
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    transform .1s ease;
+}
+
+.boton-principal:hover {
+  background: #69391f;
+}
+
+.boton-principal:active {
+  transform: scale(.99);
+}
+
+.boton-principal:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+
+/* ==============================
+   MENSAJES
+============================== */
+
+#mensajeNuevo {
+  display: none;
+
+  margin-top: 22px;
+
+  padding: 18px;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+  line-height: 1.5;
+}
+
+.correcto {
+  display: block !important;
+
+  background: #eaf5ec;
+
+  color: #285d31;
+
+  border: 1px solid #bcd9c1;
+}
+
+.error {
+  display: block !important;
+
+  background: #f9e9e9;
+
+  color: #8a2929;
+
+  border: 1px solid #e2bcbc;
+}
+
+
+/* ==============================
+   MÓDULOS FUTUROS
+============================== */
+
+.proximamente {
+  margin-top: 25px;
+
+  padding: 30px 20px;
+
+  background: #f5f2ef;
+
+  border: 1px dashed #c9bcb2;
+  border-radius: 10px;
+
+  color: #777;
+
+  text-align: center;
+
+  font-size: 14px;
+}
+
+
+/* ==============================
+   PIE
+============================== */
+
+.pie {
+  text-align: center;
+
+  font-size: 11px;
+
+  color: #999;
+
+  padding-top: 28px;
+}
+
+
+/* ==============================
+   CELULARES
+============================== */
+
+@media (max-width: 600px) {
+
+  body {
+    padding: 8px;
+
+    align-items: flex-start;
+  }
+
+  .contenedor {
+    width: 96vw;
+    max-width: 96vw;
+
+    border-radius: 14px;
+  }
+
+  .encabezado {
+    padding: 35px 60px 30px;
+  }
+
+  .encabezado h1 {
+    font-size: 32px;
+  }
+
+  .hotel {
+    font-size: 12px;
+  }
+
+  .subtitulo {
+    font-size: 12px;
+  }
+
+  .boton-menu {
+    left: 14px;
+
+    width: 42px;
+    height: 42px;
+
+    font-size: 22px;
+  }
+
+  .contenido {
+    padding: 30px 22px;
+  }
+
+  .titulo {
+    font-size: 23px;
+  }
+
+  .descripcion {
+    font-size: 15px;
+  }
+
+  label {
+    font-size: 15px;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"] {
+    font-size: 17px;
+
+    padding: 17px;
+
+    min-height: 58px;
+  }
+
+  .boton-principal {
+    font-size: 17px;
+
+    padding: 18px;
+
+    min-height: 60px;
+  }
+
+  .menu-lateral {
+    width: 82%;
+    max-width: 300px;
+  }
+
+  .texto-acuerdo {
+    max-height: 200px;
+  }
+
+  .pie {
+    font-size: 12px;
+  }
+
+}
+#mensajeActualizacion {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #e8f5e9;
+  border: 1px solid #b7dfbd;
+  text-align: center;
+  font-weight: 600;
+  color: #17652d;
+  line-height: 1.5;
+}
+/* SELECTOR DE IDIOMA */
+
+.selector-idioma {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 6px;
+}
+
+.boton-idioma {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+
+  padding: 0;
+  margin: 0;
+
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.25);
+
+  font-size: 24px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+.boton-idioma:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.boton-idioma.activo {
+  background: white;
+  color: #333;
+}
+.boton-idioma img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.tabla-saldo {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla-saldo th {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 2px solid #ddd;
+}
+
+.tabla-saldo td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.total-saldo {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0 12px;
+}
+#seccionSaldo .campo {
+  margin-bottom: 14px;
+}
+
+#seccionSaldo .campo label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+#saldoNumeroTaxista,
+#saldoEstado {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#botonConsultarSaldo {
+  width: 100%;
+  margin-top: 5px;
+  padding: 11px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+/* Modal confirmar pago */
+.modal-pago {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-pago-contenido {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px 24px 24px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.modal-pago-contenido h2 {
+  margin: 0 0 20px;
+  font-size: 24px;
+  color: #222222;
+}
+
+.modal-pago-contenido p {
+  margin: 7px 0;
+  color: #555555;
+  font-size: 15px;
+}
+
+.modal-pago-total {
+  margin: 22px 0;
+  padding: 18px;
+  background: #f5f3ef;
+  border-radius: 12px;
+}
+
+.modal-pago-total span {
+  display: block;
+  font-size: 13px;
+  color: #777777;
+  margin-bottom: 5px;
+}
+
+.modal-pago-total strong {
+  display: block;
+  font-size: 30px;
+  color: #222222;
+}
+
+.modal-pago-pregunta {
+  margin: 20px 0 !important;
+  font-weight: 600;
+}
+
+.modal-pago-botones {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.modal-pago-botones button {
+  flex: 1;
+  padding: 13px 10px;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#cancelarPago {
+  background: #eeeeee;
+  color: #444444;
+}
+
+#confirmarPago {
+  background: #222222;
+  color: #ffffff;
+}
+/* Mensaje de pago realizado */
+.pago-exitoso-icono {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #222222;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+#cerrarPagoExitoso {
+  width: 100%;
+  margin-top: 22px;
+  padding: 13px;
+  border: none;
+  border-radius: 9px;
+  background: #222222;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* MODAL ACCESO PERSONAL */
+#modalAccesoPersonal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.65);
+  align-items: center;
+  justify-content: center;
+}
+
+#modalAccesoPersonal .modal-pago-contenido {
+  position: relative;
+  z-index: 10000;
+  width: 90%;
+  max-width: 360px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+}
+/* ========================================
+   ACCESO AL PERSONAL
+======================================== */
+
+.modal-acceso-contenido {
+  width: 100%;
+  max-width: 390px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 34px 32px 28px;
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+}
+
+.modal-acceso-marca {
+  color: #8a5a32;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+
+.modal-acceso-contenido h2 {
+  margin: 0;
+  color: #28201b;
+  font-family: Georgia, serif;
+  font-size: 27px;
+  font-weight: normal;
+}
+
+.modal-acceso-descripcion {
+  margin: 12px auto 26px;
+  max-width: 290px;
+  color: #777;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-acceso-campo {
+  text-align: left;
+}
+
+.modal-acceso-campo label {
+  margin: 0 0 7px;
+  color: #3b312b;
+  font-size: 13px;
+}
+
+#clavePersonal {
+  width: 100%;
+  height: 52px;
+  padding: 0 15px;
+  border: 1px solid #d2cbc5;
+  border-radius: 9px;
+  background: #faf9f8;
+  font-size: 16px;
+  outline: none;
+}
+
+#clavePersonal:focus {
+  border-color: #8a5a32;
+  box-shadow: 0 0 0 3px rgba(138, 90, 50, 0.10);
+}
+
+.mensaje-clave {
+  min-height: 18px;
+  margin: 10px 0;
+  color: #8a2929;
+  font-size: 13px;
+}
+
+.boton-ingresar-personal {
+  width: 100%;
+  padding: 15px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 9px;
+  background: #7b4527;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.boton-ingresar-personal:hover {
+  background: #69391f;
+}
+
+.boton-cancelar-personal {
+  margin-top: 14px;
+  padding: 8px 15px;
+  border: 0;
+  background: transparent;
+  color: #777;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.boton-cancelar-personal:hover {
+  color: #28201b;
+}

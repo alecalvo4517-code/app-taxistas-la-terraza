@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>La Terraza | Programa de Taxistas</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <!-- ENCABEZADO -->
+    <header class="encabezado">
+<div class="selector-idioma">
+
+  <button
+  type="button"
+  class="boton-idioma"
+  id="idiomaES"
+  onclick="cambiarIdioma('es')"
+  aria-label="Español"
+  title="Español"
+>
+  <img
+    src="https://flagcdn.com/w80/ar.png"
+    alt="Argentina"
+  >
+</button>
+
+  <button
+  type="button"
+  class="boton-idioma"
+  id="idiomaPT"
+  onclick="cambiarIdioma('pt')"
+  aria-label="Português"
+  title="Português"
+>
+  <img
+    src="https://flagcdn.com/w80/br.png"
+    alt="Brasil"
+  >
+</button>
+
+</div>
+      <button
+        type="button"
+        class="boton-menu"
+        id="botonMenu"
+        aria-label="Abrir menú"
+      >
+        ☰
+      </button>
+
+      <div class="hotel">IGUAZÚ GRAND</div>
+
+      <h1>La Terraza</h1>
+
+      <div class="subtitulo">
+        Parrilla · Puerto Iguazú
+      </div>
+
+    </header>
+
+
+    <!-- MENÚ LATERAL -->
+    <nav class="menu-lateral" id="menuLateral">
+
+      <div class="menu-titulo" id="textoPrograma">
+  Programa de Taxistas
+</div>
+
+      <button
+        type="button"
+        class="opcion-menu activa"
+        data-seccion="registro"
+        id="menuRegistro"
+      >
+        Registro de Taxista
+      </button>
+
+      <button
+        type="button"
+        class="opcion-menu"
+        data-seccion="tickets"
+        id="menuTickets"
+      >
+        Cargar Ticket
+      </button>
+
+      <button
+        type="button"
+        class="opcion-menu"
+        data-seccion="saldo"
+        id="menuSaldo"
+      >
+        Consultar Saldo
+      </button>
+<button
+  type="button"
+  id="menuAccesoPersonal"
+  class="opcion-menu acceso-personal"
+>
+  Acceso personal
+</button>
+    </nav>
+
+    <div class="fondo-menu" id="fondoMenu"></div>
+
+
+    <!-- CONTENIDO -->
+    <main class="contenido">
+
+
+      <!-- REGISTRO DE TAXISTA -->
+      <section
+        id="seccionRegistro"
+        class="seccion activa"
+      >
+
+        <h2 class="titulo" id="tituloRegistro">
+          Registro de Taxista
+        </h2>
+
+        <div class="descripcion" id="descripcionRegistro">
+          Completá tus datos para formar parte del Programa de Taxistas de La Terraza.
+        </div>
+
+
+        <form id="formRegistroTaxista">
+
+
+          <!-- NOMBRE -->
+          <label for="nombreNuevo" id="labelNombre">
+            Nombre y apellido
+          </label>
+
+          <input
+            type="text"
+            id="nombreNuevo"
+            autocomplete="name"
+            placeholder="Ej.: Juan Pérez"
+            required
+          >
+
+
+          <!-- TELÉFONO -->
+          <label for="telefonoNuevo" id="labelTelefono">
+            Teléfono
+          </label>
+
+          <input
+            type="tel"
+            id="telefonoNuevo"
+            autocomplete="tel"
+            inputmode="tel"
+            placeholder="Ej.: 3757 123456"
+            required
+          >
+
+
+          <!-- NACIONALIDAD -->
+          <label for="nacionalidadNuevo" id="labelNacionalidad">
+            Nacionalidad
+          </label>
+
+          <input
+            type="text"
+            id="nacionalidadNuevo"
+            autocomplete="country-name"
+            placeholder="Ej.: Argentina"
+            required
+          >
+
+
+          <!-- PARADA / AGENCIA -->
+          <label for="paradaNuevo" id="labelParada">
+            Parada o agencia
+          </label>
+
+          <input
+            type="text"
+            id="paradaNuevo"
+            autocomplete="organization"
+            placeholder="Ej.: Parada Centro"
+            required
+          >
+
+
+          <!-- DNI -->
+          <label for="dniNuevo" id="labelDni">
+            DNI / Documento
+          </label>
+
+          <input
+            type="text"
+            id="dniNuevo"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Ej.: 30123456"
+            required
+          >
+
+
+          <!-- CORREO -->
+          <label for="correoNuevo" id="labelCorreo">
+            Correo electrónico
+          </label>
+
+          <input
+            type="email"
+            id="correoNuevo"
+            autocomplete="email"
+            placeholder="Ej.: nombre@correo.com"
+            required
+          >
+
+
+          <!-- ACUERDO -->
+          <div class="caja-acuerdo">
+
+            <div class="titulo-acuerdo" id="tituloAcuerdo">
+              Acuerdo del Programa de Comisiones
+            </div>
+
+            <div class="texto-acuerdo" id="textoAcuerdo">
+
+              <p>
+                <strong>Comisión:</strong>
+                La comisión será del 10 % sobre los alimentos y bebidas
+                elegibles efectivamente consumidos por los clientes derivados.
+              </p>
+
+              <p>
+                No se incluyen propinas, shows artísticos, cargos adicionales,
+                cortesías, consumos bonificados, cancelaciones ni devoluciones.
+              </p>
+
+              <p>
+                No corresponde comisión por huéspedes de Panoramic Grand o
+                Iguazú Grand, clientes con reserva previa ni visitas posteriores
+                realizadas sin intervención del conductor.
+              </p>
+
+              <p>
+                Cada cuenta o ticket podrá generar una sola comisión y deberá
+                estar asociado a un único conductor.
+              </p>
+
+              <p>
+                Los tickets duplicados, inexistentes, anulados, alterados o que
+                no puedan verificarse no generarán comisión.
+              </p>
+
+              <p>
+                El pago se realizará en pesos argentinos una vez validada la
+                información, de acuerdo con las condiciones establecidas por
+                La Terraza.
+              </p>
+
+              <p>
+                Los datos suministrados serán utilizados para administrar,
+                controlar y pagar las comisiones correspondientes.
+              </p>
+
+            </div>
+
+
+            <label class="aceptacion">
+
+              <input
+                type="checkbox"
+                id="aceptaAcuerdo"
+              >
+
+              <span id="textoAceptacion">
+                He leído y acepto el Acuerdo del Programa de Comisiones de
+                La Terraza.
+              </span>
+
+            </label>
+
+          </div>
+
+
+          <!-- BOTÓN REGISTRO -->
+          <button
+            type="submit"
+            id="botonNuevo"
+            class="boton-principal"
+          >
+            OBTENER MI NÚMERO
+          </button>
+
+        </form>
+
+
+        <!-- MENSAJE DE RESULTADO -->
+        <div id="mensajeNuevo"></div>
+
+      </section>
+
+
+
+      <!-- CARGA DE TICKET -->
+<section
+  id="seccionTickets"
+  class="seccion"
+>
+
+  <h2 class="titulo">
+    Cargar Ticket
+  </h2>
+
+  <div class="descripcion">
+    Registro de consumos derivados por taxistas.
+  </div>
+
+
+  <form id="formRegistroTicket">
+
+    <!-- NÚMERO DE TAXISTA -->
+    <label for="numeroTaxistaTicket">
+      N.º de Taxista
+    </label>
+
+    <input
+      type="number"
+      id="numeroTaxistaTicket"
+      inputmode="numeric"
+      placeholder="Ej.: 100"
+      required
+    >
+
+
+    <!-- NÚMERO DE TICKET -->
+    <label for="numeroTicket">
+      N.º de Ticket
+    </label>
+
+    <input
+      type="text"
+      id="numeroTicket"
+      inputmode="numeric"
+      autocomplete="off"
+      placeholder="Ej.: 45872"
+      required
+    >
+
+
+    <!-- IMPORTE -->
+    <label for="importeTicket">
+      Importe de la cuenta
+    </label>
+
+    <input
+      type="number"
+      id="importeTicket"
+      inputmode="decimal"
+      min="0"
+      step="0.01"
+      placeholder="Ej.: 85000"
+      required
+    >
+
+
+    <!-- BOTÓN -->
+    <button
+      type="submit"
+      id="botonCargarTicket"
+      class="boton-principal"
+    >
+      CARGAR TICKET
+    </button>
+
+  </form>
+
+
+  <!-- RESULTADO DEL TICKET -->
+  <div
+    id="resultadoTicket"
+    style="display:none;"
+  >
+
+    <div class="correcto">
+
+      <strong style="font-size:20px;">
+        Ticket cargado correctamente
+      </strong>
+
+      <br><br>
+
+      Taxista:
+      <strong id="resultadoNombreTaxista"></strong>
+
+      <br>
+
+      N.º de ticket:
+      <strong id="resultadoNumeroTicket"></strong>
+
+      <br>
+
+      Importe:
+      <strong id="resultadoImporte"></strong>
+
+      <br><br>
+
+      Comisión calculada:
+
+      <br>
+
+      <strong
+        id="resultadoComision"
+        style="font-size:30px;"
+      ></strong>
+
+    </div>
+
+
+    <!-- CONTROL DE COMISIÓN -->
+    <div class="caja-acuerdo">
+
+      <div class="titulo-acuerdo">
+        Control de Comisión
+      </div>
+
+
+      <label for="comisionReal">
+        Importe real de comisión
+      </label>
+
+      <input
+        type="number"
+        id="comisionReal"
+        min="0"
+        step="0.01"
+        inputmode="decimal"
+      >
+
+
+      <label for="estadoPago">
+        Estado
+      </label>
+
+      <select id="estadoPago">
+
+        <option value="Pendiente">
+          Pendiente de pago
+        </option>
+
+        <option value="Pagado">
+          Pagado
+        </option>
+
+      </select>
+
+
+      <button
+        type="button"
+        id="botonActualizarTicket"
+        class="boton-principal"
+      >
+        ACTUALIZAR
+      </button>
+<div id="mensajeActualizacion"></div>
+    </div>
+
+  </div>
+
+
+  <!-- MENSAJES / ERRORES -->
+  <div id="mensajeTicket"></div>
+
+</section>
+
+
+
+<!-- CONSULTA DE SALDO -->
+<section
+  id="seccionSaldo"
+  class="seccion"
+>
+
+  <h2 class="titulo" id="tituloSaldo">
+  Consultar Saldo
+</h2>
+
+  <<div class="descripcion" id="descripcionSaldo">
+  Consultá las comisiones pendientes de pago o ya abonadas.
+</div>
+
+  <div class="campo">
+    <label for="saldoNumeroTaxista" id="labelSaldoTaxista">
+  N.º de Taxista
+</label>
+
+    <input
+      type="number"
+      id="saldoNumeroTaxista"
+      placeholder="Ej: 103"
+    >
+  </div>
+
+  <div class="campo">
+    <label for="saldoEstado" id="labelSaldoEstado">
+  Estado
+</label>
+
+    <select id="saldoEstado">
+      <option value="Pendiente de pago" id="opcionSaldoPendiente">
+  Pendiente de pago
+</option>
+
+      <option value="Pagado" id="opcionSaldoPagado">
+  Pagado
+</option>
+
+      <option value="Todos" id="opcionSaldoTodos">
+  Todos
+</option>
+    </select>
+  </div>
+
+  <button
+  type="button"
+  id="botonConsultarSaldo"
+>
+  <span id="textoBotonConsultarSaldo">CONSULTAR</span>
+</button>
+
+  <div id="resultadoSaldo"></div>
+
+</section>
+
+
+      <!-- PIE -->
+      <footer class="pie">
+        La Terraza · Iguazú Grand
+      </footer>
+
+
+    </main>
+
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+ 
+
+<!-- Ventana de confirmación de pago -->
+<div id="modalPago" class="modal-pago">
+  <div class="modal-pago-contenido" style="display:block !important; visibility:visible !important; opacity:1 !important;">
+
+    <h2>Confirmar pago</h2>
+
+    <p id="modalPagoTaxista"></p>
+    <p id="modalPagoTickets"></p>
+
+    <div class="modal-pago-total">
+      <span>Total a pagar</span>
+      <strong id="modalPagoTotal">$ 0,00</strong>
+    </div>
+
+    <p class="modal-pago-pregunta">
+      ¿Confirma que el pago fue realizado?
+    </p>
+
+    <div class="modal-pago-botones">
+      <button type="button" id="cancelarPago">
+        CANCELAR
+      </button>
+
+      <button type="button" id="confirmarPago">
+        CONFIRMAR PAGO
+      </button>
+    </div>
+
+  </div>
+</div>
+<!-- Mensaje de pago realizado -->
+<div id="modalPagoExitoso" class="modal-pago">
+  <div class="modal-pago-contenido">
+
+    <div class="pago-exitoso-icono">✓</div>
+
+    <h2>Pago realizado</h2>
+
+    <p>El pago fue registrado correctamente.</p>
+
+    <button type="button" id="cerrarPagoExitoso">
+      ACEPTAR
+    </button>
+
+  </div>
+</div>
+<!-- Acceso para personal -->
+<div id="modalAccesoPersonal" class="modal-pago">
+
+  <div class="modal-acceso-contenido">
+
+    <div class="modal-acceso-marca">
+      IGUAZÚ GRAND
+    </div>
+
+    <h2>Acceso al personal</h2>
+
+    <p class="modal-acceso-descripcion">
+      Ingresá tu clave para acceder a las funciones de caja de La Terraza.
+    </p>
+
+    <div class="modal-acceso-campo">
+      <label for="clavePersonal">Clave de acceso</label>
+
+      <input
+        type="password"
+        id="clavePersonal"
+        placeholder="Ingresá tu clave"
+        autocomplete="off"
+      >
+    </div>
+
+    <p id="mensajeClavePersonal" class="mensaje-clave"></p>
+
+    <button
+      type="button"
+      id="confirmarAccesoPersonal"
+      class="boton-ingresar-personal"
+    >
+      INGRESAR
+    </button>
+
+    <button
+      type="button"
+      id="cancelarAccesoPersonal"
+      class="boton-cancelar-personal"
+    >
+      Cancelar
+    </button>
+
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+
+</html>
