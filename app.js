@@ -673,7 +673,7 @@ function probarCargaTicket() {
 
 
   // Calcular comisión del 10 %
-  const comision = importe * 0.10;
+  const comision = (importe / 1.21) * 0.10;
 const datosTicket = {
   numeroTaxista: numeroTaxista,
   numeroTicket: numeroTicket,
