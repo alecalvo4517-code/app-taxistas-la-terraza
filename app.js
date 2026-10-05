@@ -3,7 +3,7 @@
 // app.js
 // ======================================================
 
-let tipoUsuario = 'taxista';
+let tipoUsuario = sessionStorage.getItem('tipoUsuario') || 'taxista';
 function aplicarPermisosUsuario() {
 
   const seccionTickets = document.getElementById('seccionTickets');
@@ -104,7 +104,7 @@ if (confirmarAccesoPersonal) {
 
   if (respuesta.ok && datos.autorizado === true) {
     tipoUsuario = 'cajero';
-
+    sessionStorage.setItem('tipoUsuario', 'cajero');
     modalAccesoPersonal.style.display = 'none';
     document.getElementById('clavePersonal').value = '';
     mensaje.textContent = '';
@@ -682,6 +682,11 @@ const datosTicket = {
   comisionReal: comision,
   estado: 'Pendiente de pago'
   };
+  const botonCargarTicket =
+  document.querySelector('#formRegistroTicket button[type="submit"]');
+
+botonCargarTicket.disabled = true;
+botonCargarTicket.textContent = 'GUARDANDO TICKET...';
   fetch(POWER_AUTOMATE_TICKET_URL, {
   method: 'POST',
   headers: {
@@ -691,6 +696,9 @@ const datosTicket = {
 })
 .then(response => response.json())
 .then(data => {
+
+  botonCargarTicket.disabled = false;
+botonCargarTicket.textContent = 'CARGAR TICKET';
 
   console.log('Respuesta Power Automate:', data);
 
@@ -706,6 +714,13 @@ if (data.taxistaNoExiste === true) {
   );
   throw new Error('TAXISTA_NO_EXISTE');
 }
+if (data.ok !== true) {
+  mostrarErrorTicket(
+    data.mensaje || 'El ticket todavía no fue confirmado en Excel.'
+  );
+  throw new Error('TICKET_NO_CONFIRMADO');
+}
+
   return data;
 })
 
@@ -788,12 +803,20 @@ botonActualizarTicket.addEventListener('click', function () {
   const numeroTicket = document.getElementById('resultadoNumeroTicket').textContent.trim();
   const comisionReal = parseFloat(document.getElementById('comisionReal').value);
   const estado = document.getElementById('estadoPago').value;
+  const mensajeActualizacion = document.getElementById('mensajeActualizacion');
+
+mensajeActualizacion.textContent = 'Actualizando comisión...';
+mensajeActualizacion.style.display = 'block';
+
+botonActualizarTicket.disabled = true;
+botonActualizarTicket.textContent = 'ACTUALIZANDO...';
 
   console.log('Datos para actualizar:', {
     numeroTicket,
     comisionReal,
     estado
   });
+
     fetch(POWER_AUTOMATE_UPDATE_URL, {
   method: 'POST',
   headers: {
@@ -809,19 +832,30 @@ botonActualizarTicket.addEventListener('click', function () {
 .then(data => {
   console.log('Respuesta actualización:', data);
 
-  const mensajeActualizacion = document.getElementById('mensajeActualizacion');
-
-if (data.ok === true) {
-  mensajeActualizacion.innerHTML =
-    '✓ Comisión actualizada correctamente<br>Estado: ' + estado;
+  const mensajeActualizacion =
+    document.getElementById('mensajeActualizacion');
+botonActualizarTicket.disabled = false;
+botonActualizarTicket.textContent = 'ACTUALIZAR';
+  if (data.ok === true) {
+    mensajeActualizacion.innerHTML =
+      '✓ Comisión actualizada correctamente<br>Estado: ' + estado;
+  } else {
+    mensajeActualizacion.textContent =
+      data.mensaje || 'No se pudo actualizar la comisión.';
+  }
 
   mensajeActualizacion.style.display = 'block';
-} else {
+})
+.catch(error => {
+  console.error('ERROR ACTUALIZAR:', error);
+
+  const mensajeActualizacion =
+    document.getElementById('mensajeActualizacion');
+
   mensajeActualizacion.textContent =
-    data.mensaje || 'No se pudo actualizar la comisión.';
+    'ERROR: ' + error.message;
 
   mensajeActualizacion.style.display = 'block';
-}
 });
 });
 // ===============================
@@ -1130,8 +1164,9 @@ document.getElementById('cancelarPago').onclick = function () {
   document.getElementById('modalPago').style.display = 'none';
 };
 document.getElementById('confirmarPago').onclick = async function () {
-    botonConfirmarPago.disabled = true;
-botonConfirmarPago.textContent = 'PROCESANDO PAGO...';
+    const botonProcesarPago = document.getElementById('confirmarPago');
+botonProcesarPago.disabled = true;
+botonProcesarPago.textContent = 'PROCESANDO PAGO...';
 const respuestaPago = await fetch(POWER_AUTOMATE_PAGO_URL, {
   method: 'POST',
   headers: {
@@ -1148,8 +1183,8 @@ if (!respuestaPago.ok) {
 const datosPago = await respuestaPago.json();
 
 document.getElementById('modalPago').style.display = 'none';
-botonConfirmarPago.disabled = false;
-botonConfirmarPago.textContent = 'REALIZAR PAGO';
+botonProcesarPago.disabled = false;
+botonProcesarPago.textContent = 'PAGAR';
 document.getElementById('modalPagoExitoso').style.display = 'flex';
 document.getElementById('cerrarPagoExitoso').onclick = function () {
   document.getElementById('modalPagoExitoso').style.display = 'none';
