@@ -1,4 +1,4 @@
-const CACHE_NAME = 'la-terraza-taxistas-v2';
+const CACHE_NAME = 'la-terraza-taxistas-v3';
 
 const ARCHIVOS = [
   './',
