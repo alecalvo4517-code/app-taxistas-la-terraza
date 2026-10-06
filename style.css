@@ -913,3 +913,32 @@ input[type="email"]:focus {
 .boton-cancelar-personal:hover {
   color: #28201b;
 }
+/* WhatsApp en menú lateral */
+.whatsapp-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  text-decoration: none;
+  cursor: pointer;
+}
+.whatsapp-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #25D366;
+  color: white;
+  font-size: 0;
+  flex-shrink: 0;
+}
+
+
+.whatsapp-icon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
