@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 const POWER_AUTOMATE_TAXISTA_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/08/workflows/c6b7c2469f344866ac5f60461e86ec5f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7_RT1iZnqWAlCXT72fcPYQ8wL4lSAufJB6TRlyNojX0';
 const POWER_AUTOMATE_TICKET_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/01/workflows/4066e8ddd7c34582b076075659165142/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DXyNtdlu6iNhzOJWvveUEQ3Lx9MyEch61H_T1ifliVM';
 const POWER_AUTOMATE_UPDATE_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/e6f757a94e8549f68184d6fbe70ec462/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=SrTUPlG0JWlYoMS5v_9OBnJ6dNWQYa8sQhrU-wLZqsQ';
+const POWER_AUTOMATE_CREDENCIAL_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/aaea0b3160fe44c480f09a7d67baaaa0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9O6tyKCv5O_g6FOxzO5XPMzovzAEog3t63qmtQ3qJ8w';
 const POWER_AUTOMATE_SALDO_URL = "https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/20/workflows/7b52f6bad623430e89ae2cb47ec79ed0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=cSY_eAypxYHkt0vyeeAClRG8yCKdQUrXcSjZzSx4WTI";
 const POWER_AUTOMATE_PAGO_URL = "https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/10ad9f2d3709438fa6649f89be98876b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VVw4iiB20EUPAIZtD09UlLZUtMzviL96FWJEn6cY9rA";
 const POWER_AUTOMATE_ACCESO_URL = 'https://default360b5914f0284ef2a7ea9e27a75aac.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/23/workflows/9735f45e168e415bbf91f9ce2ccb1a7a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=AgxnsT9qpOFmlI-Ue8_0TEyF98l-vu8RhVHyY0uUQCI';
@@ -173,6 +174,11 @@ opcionesMenu.forEach(function (opcion) {
     });
 
     // Mostrar sección correspondiente
+    if (destino === 'credencial') {
+  document
+    .getElementById('seccionCredencial')
+    .classList.add('activa');
+}
     if (destino === 'registro') {
       document
         .getElementById('seccionRegistro')
@@ -878,6 +884,12 @@ function cambiarIdioma(idioma) {
     .classList.toggle('activo', idioma === 'pt');
     if (idioma === 'pt') {
   document.getElementById('textoPrograma').textContent = 'Programa de Taxistas';
+  document.getElementById('menuCredencial').textContent = 'Minha Credencial';
+document.getElementById('tituloCredencial').textContent = 'Minha Credencial';
+document.getElementById('descripcionCredencial').textContent =
+  'Digite seu RG / Documento para consultar sua credencial.';
+document.getElementById('labelDocumentoCredencial').textContent = 'RG / Documento';
+document.getElementById('textoBotonCredencial').textContent = 'BUSCAR CREDENCIAL';
   document.getElementById('menuRegistro').textContent = 'Cadastro de Taxista';
   document.getElementById('menuTickets').textContent = 'Registrar Ticket';
   document.getElementById('menuSaldo').textContent = 'Consultar Saldo';
@@ -950,6 +962,12 @@ document.getElementById('botonNuevo').textContent =
 `;
 } else {
   document.getElementById('textoPrograma').textContent = 'Programa de Taxistas';
+  document.getElementById('menuCredencial').textContent = 'Mi Credencial';
+document.getElementById('tituloCredencial').textContent = 'Mi Credencial';
+document.getElementById('descripcionCredencial').textContent =
+  'Ingresá tu DNI / Documento para consultar tu credencial.';
+document.getElementById('labelDocumentoCredencial').textContent = 'DNI / Documento';
+document.getElementById('textoBotonCredencial').textContent = 'BUSCAR CREDENCIAL';
   document.getElementById('menuRegistro').textContent = 'Registro de Taxista';
   document.getElementById('menuTickets').textContent = 'Cargar Ticket';
   document.getElementById('menuSaldo').textContent = 'Consultar Saldo';
@@ -1203,4 +1221,112 @@ botonConsultarSaldo.click();
     }
 
   });
+}
+// ========================================
+// MI CREDENCIAL
+// ========================================
+
+const botonBuscarCredencial =
+  document.getElementById('botonBuscarCredencial');
+
+if (botonBuscarCredencial) {
+
+  botonBuscarCredencial.addEventListener('click', async function () {
+
+    const documento =
+      document.getElementById('documentoCredencial').value.trim();
+
+    const resultado =
+      document.getElementById('resultadoCredencial');
+
+    if (!documento) {
+      resultado.innerHTML =
+        '<p class="error">Ingresá tu DNI / Documento.</p>';
+      return;
+    }
+
+    resultado.innerHTML = '<p>Buscando credencial...</p>';
+
+    try {
+
+      const respuesta = await fetch(POWER_AUTOMATE_CREDENCIAL_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          documento: documento
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      console.log('Respuesta credencial:', datos);
+      if (datos.encontrado === true) {
+        document.getElementById('documentoCredencial').value = '';
+
+  const documentoCompleto = String(datos.documento || '');
+  const ultimos4 = documentoCompleto.slice(-4);
+  const documentoOculto =
+    '*'.repeat(Math.max(0, documentoCompleto.length - 4)) + ultimos4;
+
+  resultado.innerHTML = `
+    <div class="credencial-taxista">
+
+      <div class="credencial-marca">
+        IGUAZÚ GRAND
+      </div>
+
+      <div class="credencial-titulo">
+        LA TERRAZA
+      </div>
+
+      <div class="credencial-subtitulo">
+        PROGRAMA DE TAXISTAS
+      </div>
+
+      <div class="credencial-numero-label">
+        N.º DE TAXISTA
+      </div>
+
+      <div class="credencial-numero">
+        ${escapar(String(datos.numeroTaxista || ''))}
+      </div>
+
+      <div class="credencial-nombre">
+        ${escapar(datos.nombre || '')}
+      </div>
+
+      <div class="credencial-dato">
+        Documento: ${escapar(documentoOculto)}
+      </div>
+
+      <div class="credencial-dato">
+        Parada / Agencia: ${escapar(datos.paradaAgencia || '-')}
+      </div>
+
+      <div class="credencial-estado">
+        ✓ TAXISTA REGISTRADO
+      </div>
+
+    </div>
+  `;
+
+} else {
+
+  resultado.innerHTML =
+    '<p class="error">El documento ingresado no se encuentra registrado.</p>';
+
+}
+
+    } catch (error) {
+
+      console.error('Error credencial:', error);
+
+      resultado.innerHTML =
+        '<p class="error">No se pudo consultar la credencial.</p>';
+    }
+
+  });
+
 }

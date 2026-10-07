@@ -947,3 +947,74 @@ input[type="email"]:focus {
   max-height: 14px !important;
   display: block;
 }
+/* ========================================
+   MI CREDENCIAL
+======================================== */
+
+.credencial-taxista {
+  margin-top: 24px;
+  padding: 28px 22px;
+  background: #211813;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.credencial-marca {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #d6c7bd;
+  margin-bottom: 6px;
+}
+
+.credencial-titulo {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.credencial-subtitulo {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #b9aaa0;
+  margin-bottom: 26px;
+}
+
+.credencial-numero-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c8b9af;
+  margin-bottom: 5px;
+}
+
+.credencial-numero {
+  font-size: 46px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.credencial-nombre {
+  font-size: 21px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.credencial-dato {
+  font-size: 14px;
+  color: #ded5cf;
+  margin: 6px 0;
+}
+
+.credencial-estado {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+}

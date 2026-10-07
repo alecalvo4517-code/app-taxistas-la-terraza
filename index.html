@@ -82,13 +82,22 @@
 </div>
 
       <button
-        type="button"
-        class="opcion-menu activa"
-        data-seccion="registro"
-        id="menuRegistro"
-      >
-        Registro de Taxista
-      </button>
+  type="button"
+  class="opcion-menu"
+  data-seccion="credencial"
+  id="menuCredencial"
+>
+  Mi Credencial
+</button>
+
+<button
+  type="button"
+  class="opcion-menu activa"
+  data-seccion="registro"
+  id="menuRegistro"
+>
+  Registro de Taxista
+</button>
 
       <button
         type="button"
@@ -134,7 +143,41 @@
 
     <!-- CONTENIDO -->
     <main class="contenido">
+<!-- MI CREDENCIAL -->
+<section
+  id="seccionCredencial"
+  class="seccion"
+>
+  <h2 class="titulo" id="tituloCredencial">Mi Credencial</h2>
 
+  <div class="descripcion" id="descripcionCredencial">
+  Ingresá tu DNI / Documento para consultar tu credencial.
+</div>
+
+  <div class="campo">
+    <label for="documentoCredencial" id="labelDocumentoCredencial">
+  DNI / Documento
+</label>
+
+    <input
+      type="text"
+      id="documentoCredencial"
+      inputmode="numeric"
+      autocomplete="off"
+      placeholder="Ej.: 30123456"
+    >
+  </div>
+
+  <button
+  type="button"
+  id="botonBuscarCredencial"
+  class="boton-principal"
+>
+  <span id="textoBotonCredencial">BUSCAR CREDENCIAL</span>
+</button>
+
+  <div id="resultadoCredencial"></div>
+</section>
 
       <!-- REGISTRO DE TAXISTA -->
       <section
